@@ -1,0 +1,33 @@
+from socket import *
+from pickle import *
+from paquete import *
+from constantes import *
+
+def create_UDPsock():
+	UDPsocket = socket(AF_INET, SOCK_DGRAM)
+	return UDPsocket	
+    
+def rdt_send(): #de la capa de aplicacion a la capa de transpórte
+    data=input('ingrese un mensaje:  ') #lee desdde teclado
+    return(data.encode('utf-8'))#el encode lo codifica mueve datos codificados 
+    
+def make_pkt(data):#voy a mandar tal cual lo recibe, crea el paquete 
+    pkt = Packet(SOURCE_PORT, RECEIVER_PORT, data)
+    return pkt  
+    
+def udp_send(socket, pkt):#si me toma el socket y los datos y hace send en los datos 
+    data = dumps(pkt)
+    socket.sendto(data, (RECEIVER_IP, RECEIVER_PORT))
+    
+def close_socket(socket):
+    socket.close()
+    
+if __name__ == "__main__":
+    cliente=create_UDPsock()
+    while 1: #ciclo eterno 
+        data=rdt_send()
+        paquete=make_pkt(data)
+        udp_send(cliente, paquete)
+    close_socket(cliente)    
+    
+
